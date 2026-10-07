@@ -5,22 +5,85 @@ import { supabase } from './supabase.js';
 import { getReviewStats } from './rating.js';
 import { showLoading, showError, showEmpty, createTeacherCard } from './ui.js';
 
+// Diagnostic function to test teachers table query directly
+export async function testTeachersTable() {
+    console.log('testTeachersTable: Testing direct query to teachers table');
+    try {
+        const { data, error } = await supabase
+            .from('teachers')
+            .select('*');
+
+        console.log('testTeachersTable: Direct query completed', { data, error });
+        if (error) {
+            console.error('testTeachersTable: Direct query failed:', error);
+            return { error: error.message };
+        }
+        console.log('testTeachersTable: Direct query returned', data ? `${data.length} teachers` : 'no data');
+        return { data, error: null };
+    } catch (error) {
+        console.error('testTeachersTable: Error in direct query:', error);
+        return { error: error.message };
+    }
+}
+
 /**
  * Fetch all active teachers from Supabase
  * @returns {Promise<Array>} - Array of teacher objects
  */
 export async function fetchTeachers() {
+    console.log('fetchTeachers: Starting query to teachers table');
     try {
+        // First, try the query with is_active filter
+        console.log('fetchTeachers: Trying query with is_active = true filter');
         const { data, error } = await supabase
             .from('teachers')
             .select('*')
             .eq('is_active', true)
             .order('name');
 
-        if (error) throw error;
+        console.log('fetchTeachers: Filtered query completed', { data: data ? `${data.length} items` : 'null', error });
+        if (error) {
+            console.error('fetchTeachers: Filtered query failed:', error);
+            // If there's an error with the is_active column, try without it
+            console.log('fetchTeachers: Trying query without is_active filter');
+            const { data: dataNoFilter, error: errorNoFilter } = await supabase
+                .from('teachers')
+                .select('*')
+                .order('name');
+
+            console.log('fetchTeachers: Unfiltered query completed', { data: dataNoFilter ? `${dataNoFilter.length} items` : 'null', error: errorNoFilter });
+            if (errorNoFilter) {
+                console.error('fetchTeachers: Unfiltered query also failed:', errorNoFilter);
+                throw errorNoFilter;
+            }
+            console.log('fetchTeachers: Returning', dataNoFilter ? `${dataNoFilter.length} teachers (no filter)` : 'null/undefined data');
+            return dataNoFilter || [];
+        }
+
+        // If query succeeded but returned zero results, also try without filter
+        // in case is_active column exists but values are not what we expect
+        if (data && data.length === 0) {
+            console.log('fetchTeachers: Filtered query returned zero results, trying without is_active filter');
+            const { data: dataNoFilter, error: errorNoFilter } = await supabase
+                .from('teachers')
+                .select('*')
+                .order('name');
+
+            console.log('fetchTeachers: Unfiltered query completed', { data: dataNoFilter ? `${dataNoFilter.length} items` : 'null', error: errorNoFilter });
+            if (errorNoFilter) {
+                console.error('fetchTeachers: Unfiltered query failed:', errorNoFilter);
+                // If the unfiltered query also fails, we'll return the zero results from filtered query
+                console.log('fetchTeachers: Returning zero results from filtered query (unfiltered also failed)');
+                return data || [];
+            }
+            console.log('fetchTeachers: Returning', dataNoFilter ? `${dataNoFilter.length} teachers (no filter)` : 'null/undefined data');
+            return dataNoFilter || [];
+        }
+
+        console.log('fetchTeachers: Returning', data ? `${data.length} teachers (with filter)` : 'null/undefined data');
         return data || [];
     } catch (error) {
-        console.error('Error fetching teachers:', error);
+        console.error('fetchTeachers: Error in fetchTeachers:', error);
         throw error;
     }
 }
@@ -90,16 +153,21 @@ export async function fetchTeacherWithStats(teacherId) {
  * @param {HTMLElement} container - Container element to render teachers in
  */
 export async function renderTeachersGrid(container) {
+    console.log('renderTeachersGrid: Starting');
     showLoading(container, "Loading teachers...");
 
     try {
+        console.log('renderTeachersGrid: About to call fetchTeachers');
         const teachers = await fetchTeachers();
+        console.log('renderTeachersGrid: fetchTeachers returned', teachers.length, 'teachers');
 
         if (teachers.length === 0) {
+            console.log('renderTeachersGrid: No teachers found, showing empty state');
             showEmpty(container, "No teachers found.");
             return;
         }
 
+        console.log('renderTeachersGrid: Creating teacher cards for', teachers.length, 'teachers');
         // For now, we'll render all teachers without stats to avoid too many requests
         // In a real implementation, we might fetch stats in batch or use the view
         const teacherCards = teachers.map(teacher => {
@@ -126,13 +194,17 @@ export async function renderTeachersGrid(container) {
             return card;
         });
 
+        console.log('renderTeachersGrid: Clearing container and appending', teacherCards.length, 'cards');
         container.innerHTML = '';
         teacherCards.forEach(card => container.appendChild(card));
 
         // Now fetch stats for each teacher and update cards
+        console.log('renderTeachersGrid: About to fetch stats for teachers');
         await updateTeacherStatsCards(teachers, container);
+        console.log('renderTeachersGrid: Stats update completed');
 
     } catch (error) {
+        console.error('renderTeachersGrid: Error occurred:', error);
         showError(container, "Failed to load teachers. Please try again.");
     }
 }

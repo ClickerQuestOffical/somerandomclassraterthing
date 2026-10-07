@@ -9,7 +9,10 @@ import { showLoading, showError, showEmpty, escapeHtml, debounce } from './ui.js
 import { reportReview } from './reviews.js';
 
 // Wait for DOM to load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Run diagnostic to help debug teacher loading issues
+    await diagnoseTeacherLoading();
+
     // Initialize based on current page
     const path = window.location.pathname;
 
@@ -35,18 +38,24 @@ document.addEventListener('DOMContentLoaded', () => {
  * Initialize homepage
  */
 async function initHomePage() {
+    console.log('initHomePage: Starting');
     // Load most reviewed teachers for homepage
     const mostReviewedContainer = document.getElementById('most-reviewed-teachers');
+    console.log('initHomePage: mostReviewedContainer found:', mostReviewedContainer);
     if (mostReviewedContainer) {
         try {
+            console.log('initHomePage: About to call renderMostReviewedList');
             await renderMostReviewedList(mostReviewedContainer);
+            console.log('initHomePage: renderMostReviewedList completed');
         } catch (error) {
+            console.error('initHomePage: Error in renderMostReviewedList:', error);
             showError(mostReviewedContainer, "Failed to load most reviewed teachers.");
         }
     }
 
     // Initialize search
     const searchInput = document.getElementById('search-input');
+    console.log('initHomePage: searchInput found:', searchInput);
     if (searchInput) {
         const debouncedSearch = debounce(async (e) => {
             const query = e.target.value;
@@ -68,18 +77,26 @@ async function initHomePage() {
  * Initialize teachers page
  */
 async function initTeachersPage() {
+    console.log('initTeachersPage: Starting');
     // Load teachers grid
     const teachersContainer = document.getElementById('teachers-grid');
+    console.log('initTeachersPage: teachersContainer found:', teachersContainer);
     if (teachersContainer) {
         try {
+            console.log('initTeachersPage: About to call renderTeachersGrid');
             await renderTeachersGrid(teachersContainer);
+            console.log('initTeachersPage: renderTeachersGrid completed');
         } catch (error) {
+            console.error('initTeachersPage: Error in renderTeachersGrid:', error);
             showError(teachersContainer, "Failed to load teachers.");
         }
+    } else {
+        console.error('initTeachersPage: teachersContainer NOT FOUND');
     }
 
     // Initialize search
     const searchInput = document.getElementById('teacher-search');
+    console.log('initTeachersPage: searchInput found:', searchInput);
     if (searchInput) {
         const debouncedSearch = debounce(async (e) => {
             const query = e.target.value;
@@ -363,5 +380,83 @@ function initMobileMenu() {
 
 // Export for use in other modules if needed
 export { initHomePage, initTeachersPage, initTeacherProfilePage, initTopRatedPage, initMostReviewedPage, initAboutPage };
+
+// Diagnostic functions for debugging
+export async function diagnoseTeacherLoading() {
+    console.log('=== TEACHER LOADING DIAGNOSTIC ===');
+
+    // Test 1: Direct supabase query
+    console.log('1. Testing direct supabase query...');
+    try {
+        const { data, error } = await supabase.from('teachers').select('*');
+        if (error) {
+            console.error('Direct query failed:', error);
+        } else {
+            console.log('Direct query succeeded:', data ? `${data.length} teachers` : 'no data');
+            if (data && data.length > 0) {
+                console.log('First teacher:', data[0]);
+                console.log('Teacher columns:', Object.keys(data[0]));
+                // Check is_active values in first few records
+                const isActiveValues = data.slice(0, 5).map(t => t.is_active);
+                console.log('First 5 is_active values:', isActiveValues);
+            }
+        }
+    } catch (err) {
+        console.error('Direct query error:', err);
+    }
+
+    // Test 2: Query with is_active filter
+    console.log('2. Testing query with is_active filter...');
+    try {
+        const { data, error } = await supabase.from('teachers').select('*').eq('is_active', true);
+        if (error) {
+            console.error('Filtered query failed:', error);
+        } else {
+            console.log('Filtered query succeeded:', data ? `${data.length} teachers` : 'no data');
+        }
+    } catch (err) {
+        console.error('Filtered query error:', err);
+    }
+
+    // Test 3: Query with is_active = false to see what we get
+    console.log('3. Testing query with is_active = false...');
+    try {
+        const { data, error } = await supabase.from('teachers').select('*').eq('is_active', false);
+        if (error) {
+            console.error('False filter query failed:', error);
+        } else {
+            console.log('False filter query succeeded:', data ? `${data.length} teachers` : 'no data');
+        }
+    } catch (err) {
+        console.error('False filter query error:', err);
+    }
+
+    // Test 4: Check what values exist in is_active column
+    console.log('4. Checking distinct is_active values...');
+    try {
+        const { data, error } = await supabase.from('teachers').select('is_active');
+        if (error) {
+            console.error('Distinct values check failed:', error);
+        } else {
+            if (data && data.length > 0) {
+                const values = [...new Set(data.map(t => t.is_active))];
+                console.log('Distinct is_active values:', values);
+                console.log('Total teachers:', data.length);
+                const activeCount = data.filter(t => t.is_active === true).length;
+                console.log('Teachers with is_active = true:', activeCount);
+                const falseCount = data.filter(t => t.is_active === false).length;
+                console.log('Teachers with is_active = false:', falseCount);
+                const nullCount = data.filter(t => t.is_active === null).length;
+                console.log('Teachers with is_active = null:', nullCount);
+            } else {
+                console.log('No teachers found in table');
+            }
+        }
+    } catch (err) {
+        console.error('Distinct values check error:', err);
+    }
+
+    console.log('=== DIAGNOSTIC COMPLETE ===');
+}
 
 console.log("Main application loaded");

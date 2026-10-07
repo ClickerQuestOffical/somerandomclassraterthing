@@ -10,18 +10,26 @@ import { showLoading, showError, showEmpty, createRankedTeacher } from './ui.js'
  * @returns {Promise<Array>} - Array of teacher objects with stats
  */
 export async function fetchTeachersWithStats() {
+    console.log('fetchTeachersWithStats: Starting');
     try {
         // Fetch all active teachers
+        console.log('fetchTeachersWithStats: About to query teachers table');
         const { data: teachersData, error: teachersError } = await supabase
             .from('teachers')
             .select('*')
             .eq('is_active', true);
 
-        if (teachersError) throw teachersError;
+        console.log('fetchTeachersWithStats: Teachers query completed', { data: teachersData ? `${teachersData.length} teachers` : 'null', error: teachersError });
+        if (teachersError) {
+            console.error('fetchTeachersWithStats: Teachers query failed:', teachersError);
+            throw teachersError;
+        }
 
         const teachers = teachersData || [];
+        console.log('fetchTeachersWithStats: Processing', teachers.length, 'teachers');
 
         // Fetch reviews for all teachers in parallel
+        console.log('fetchTeachersWithStats: Starting parallel review fetching for', teachers.length, 'teachers');
         const teacherPromises = teachers.map(async (teacher) => {
             try {
                 const { data: reviewsData, error } = await supabase
@@ -41,13 +49,18 @@ export async function fetchTeachersWithStats() {
             }
         });
 
+        console.log('fetchTeachersWithStats: Waiting for all review queries to complete');
         const results = await Promise.all(teacherPromises);
-        return results.map(({ teacher, stats }) => ({
+        console.log('fetchTeachersWithStats: All review queries completed, processing results');
+
+        const finalResults = results.map(({ teacher, stats }) => ({
             ...teacher,
             stats
         }));
+        console.log('fetchTeachersWithStats: Returning', finalResults.length, 'teachers with stats');
+        return finalResults;
     } catch (error) {
-        console.error('Error fetching teachers with stats:', error);
+        console.error('fetchTeachersWithStats: Error in fetchTeachersWithStats:', error);
         throw error;
     }
 }
@@ -58,12 +71,21 @@ export async function fetchTeachersWithStats() {
  * @returns {Promise<Array>} - Array of most reviewed teachers
  */
 export async function getMostReviewedTeachers(limit = 10) {
+    console.log('getMostReviewedTeachers: Starting with limit', limit);
     try {
+        console.log('getMostReviewedTeachers: About to call fetchTeachersWithStats');
         const teachersWithStats = await fetchTeachersWithStats();
-        return teachersWithStats
-            .filter(t => t.stats.totalCount > 0) // Only teachers with reviews
-            .sort((a, b) => b.stats.totalCount - a.stats.totalCount)
-            .slice(0, limit);
+        console.log('getMostReviewedTeachers: fetchTeachersWithStats returned', teachersWithStats ? `${teachersWithStats.length} teachers` : 'null');
+
+        const filtered = teachersWithStats.filter(t => t.stats.totalCount > 0); // Only teachers with reviews
+        console.log('getMostReviewedTeachers: After filtering for teachers with reviews:', filtered.length);
+
+        const sorted = filtered.sort((a, b) => b.stats.totalCount - a.stats.totalCount);
+        console.log('getMostReviewedTeachers: After sorting:', sorted.length);
+
+        const result = sorted.slice(0, limit);
+        console.log('getMostReviewedTeachers: Returning', result.length, 'teachers');
+        return result;
     } catch (error) {
         console.error('Error getting most reviewed teachers:', error);
         throw error;
