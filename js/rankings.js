@@ -2,7 +2,7 @@
 // Handles calculating and rendering teacher rankings
 
 import { supabase } from './supabase.js';
-import { getRatingLabel } from './rating.js';
+import { getRatingLabel, getReviewStats } from './rating.js';
 import { showLoading, showError, showEmpty, createRankedTeacher } from './ui.js';
 
 /**
