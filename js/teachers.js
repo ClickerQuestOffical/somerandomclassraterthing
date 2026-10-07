@@ -277,6 +277,7 @@ export async function searchTeachers(query) {
             return await fetchTeachers();
         }
 
+        // First try with is_active filter
         const { data, error } = await supabase
             .from('teachers')
             .select('*')
@@ -285,7 +286,21 @@ export async function searchTeachers(query) {
             .order('name');
 
         if (error) throw error;
-        return data || [];
+
+        // If we get results with the filter, return them
+        if (data && data.length > 0) {
+            return data;
+        }
+
+        // If no results with filter, try without it (in case is_active values are not what we expect)
+        const { data: dataNoFilter, error: errorNoFilter } = await supabase
+            .from('teachers')
+            .select('*')
+            .or(`name.ilike.%${query}%,subject.ilike.%${query}%`)
+            .order('name');
+
+        if (errorNoFilter) throw errorNoFilter;
+        return dataNoFilter || [];
     } catch (error) {
         console.error('Error searching teachers:', error);
         throw error;
@@ -303,6 +318,7 @@ export async function filterTeachersBySubject(subject) {
             return await fetchTeachers();
         }
 
+        // First try with is_active filter
         const { data, error } = await supabase
             .from('teachers')
             .select('*')
@@ -311,7 +327,21 @@ export async function filterTeachersBySubject(subject) {
             .order('name');
 
         if (error) throw error;
-        return data || [];
+
+        // If we get results with the filter, return them
+        if (data && data.length > 0) {
+            return data;
+        }
+
+        // If no results with filter, try without it (in case is_active values are not what we expect)
+        const { data: dataNoFilter, error: errorNoFilter } = await supabase
+            .from('teachers')
+            .select('*')
+            .eq('subject', subject)
+            .order('name');
+
+        if (errorNoFilter) throw errorNoFilter;
+        return dataNoFilter || [];
     } catch (error) {
         console.error('Error filtering teachers by subject:', error);
         throw error;

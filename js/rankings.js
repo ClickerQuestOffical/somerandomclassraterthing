@@ -12,8 +12,8 @@ import { showLoading, showError, showEmpty, createRankedTeacher } from './ui.js'
 export async function fetchTeachersWithStats() {
     console.log('fetchTeachersWithStats: Starting');
     try {
-        // Fetch all active teachers
-        console.log('fetchTeachersWithStats: About to query teachers table');
+        // First try with is_active filter
+        console.log('fetchTeachersWithStats: About to query teachers table with is_active = true filter');
         const { data: teachersData, error: teachersError } = await supabase
             .from('teachers')
             .select('*')
@@ -22,7 +22,37 @@ export async function fetchTeachersWithStats() {
         console.log('fetchTeachersWithStats: Teachers query completed', { data: teachersData ? `${teachersData.length} teachers` : 'null', error: teachersError });
         if (teachersError) {
             console.error('fetchTeachersWithStats: Teachers query failed:', teachersError);
-            throw teachersError;
+            // If there's an error with the is_active column, try without it
+            console.log('fetchTeachersWithStats: Trying query without is_active filter');
+            const { data: teachersDataNoFilter, error: teachersErrorNoFilter } = await supabase
+                .from('teachers')
+                .select('*');
+
+            console.log('fetchTeachersWithStats: Unfiltered teachers query completed', { data: teachersDataNoFilter ? `${teachersDataNoFilter.length} teachers` : 'null', error: teachersErrorNoFilter });
+            if (teachersErrorNoFilter) {
+                console.error('fetchTeachersWithStats: Unfiltered teachers query also failed:', teachersErrorNoFilter);
+                throw teachersErrorNoFilter;
+            }
+            teachersData = teachersDataNoFilter;
+        }
+
+        // If query succeeded but returned zero results, also try without filter
+        // in case is_active column exists but values are not what we expect
+        if (teachersData && teachersData.length === 0) {
+            console.log('fetchTeachersWithStats: Filtered teachers query returned zero results, trying without is_active filter');
+            const { data: teachersDataNoFilter, error: teachersErrorNoFilter } = await supabase
+                .from('teachers')
+                .select('*');
+
+            console.log('fetchTeachersWithStats: Unfiltered teachers query completed', { data: teachersDataNoFilter ? `${teachersDataNoFilter.length} teachers` : 'null', error: teachersErrorNoFilter });
+            if (teachersErrorNoFilter) {
+                console.error('fetchTeachersWithStats: Unfiltered teachers query failed:', teachersErrorNoFilter);
+                // If the unfiltered query also fails, we'll return the zero results from filtered query
+                console.log('fetchTeachersWithStats: Returning zero results from filtered teachers query (unfiltered also failed)');
+            } else {
+                console.log('fetchTeachersWithStats: Using results from unfiltered teachers query');
+                teachersData = teachersDataNoFilter;
+            }
         }
 
         const teachers = teachersData || [];

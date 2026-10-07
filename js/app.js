@@ -1,6 +1,8 @@
 // Main application logic for ClassReview
 // Handles page initialization, event listeners, and routing
 
+console.log('=== CLASSREVIEW APP.JS LOADED ===');
+
 import { supabase } from './supabase.js';
 import { fetchTeachers, renderTeachersGrid, searchTeachers, filterTeachersBySubject, sortTeachers, updateTeacherStatsCards } from './teachers.js';
 import { loadTeacherProfile, renderTeacherHeader, renderTeacherRating, renderReviewCounts, renderReviewVisualization, renderReviewsList, initReviewForm, initReviewSortButtons } from './teacher-profile.js';
@@ -14,20 +16,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     await diagnoseTeacherLoading();
 
     // Initialize based on current page
+    // Handle GitHub Pages subdirectory paths
     const path = window.location.pathname;
+    const pathParts = path.split('/').filter(part => part.length > 0);
+    const page = pathParts.length > 0 ? pathParts[pathParts.length - 1] : '';
 
-    if (path.endsWith('index.html') || path === '/' || path === '') {
+    console.log('=== CLASSREVIEW BOOT START ===');
+    console.log('Current URL:', window.location.href);
+    console.log('Current pathname:', window.location.pathname);
+    console.log('Document ready state:', document.readyState);
+    console.log('Detected page:', page);
+
+    if (page === 'index.html' || (page === '' && pathParts.length === 0) || (page === '' && path.endsWith('/'))) {
+        console.log('Initializing homepage');
         initHomePage();
-    } else if (path.endsWith('teachers.html')) {
+    } else if (page === 'teachers.html') {
+        console.log('Initializing teachers page');
         initTeachersPage();
-    } else if (path.endsWith('teacher.html')) {
+    } else if (page === 'teacher.html') {
+        console.log('Initializing teacher profile page');
         initTeacherProfilePage();
-    } else if (path.endsWith('top-rated.html')) {
+    } else if (page === 'top-rated.html') {
+        console.log('Initializing top rated page');
         initTopRatedPage();
-    } else if (path.endsWith('most-reviewed.html')) {
+    } else if (page === 'most-reviewed.html') {
+        console.log('Initializing most reviewed page');
         initMostReviewedPage();
-    } else if (path.endsWith('about.html')) {
+    } else if (page === 'about.html') {
+        console.log('Initializing about page');
         initAboutPage();
+    } else if (page === '' && path.endsWith('/')) {
+        // Handle root path of the GitHub Pages site
+        console.log('Initializing homepage (root path)');
+        initHomePage();
     }
 
     // Initialize mobile menu if exists
