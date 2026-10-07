@@ -18,16 +18,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize based on current page
     // Handle GitHub Pages subdirectory paths
     const path = window.location.pathname;
-    const pathParts = path.split('/').filter(part => part.length > 0);
-    const page = pathParts.length > 0 ? pathParts[pathParts.length - 1] : '';
+
+    // Remove query string and hash for clean path detection
+    const cleanPath = path.split('?')[0].split('#')[0];
+
+    let page = '';
+    if (cleanPath.endsWith('/')) {
+        // Path ends with / means it's a directory, treat as index.html
+        page = 'index.html';
+    } else {
+        // Extract the filename from the path
+        const pathParts = cleanPath.split('/').filter(part => part.length > 0);
+        page = pathParts.length > 0 ? pathParts[pathParts.length - 1] : '';
+    }
 
     console.log('=== CLASSREVIEW BOOT START ===');
     console.log('Current URL:', window.location.href);
     console.log('Current pathname:', window.location.pathname);
+    console.log('Clean path:', cleanPath);
     console.log('Document ready state:', document.readyState);
     console.log('Detected page:', page);
 
-    if (page === 'index.html' || (page === '' && pathParts.length === 0) || (page === '' && path.endsWith('/'))) {
+    if (page === 'index.html') {
         console.log('Initializing homepage');
         initHomePage();
     } else if (page === 'teachers.html') {
@@ -45,10 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else if (page === 'about.html') {
         console.log('Initializing about page');
         initAboutPage();
-    } else if (page === '' && path.endsWith('/')) {
-        // Handle root path of the GitHub Pages site
-        console.log('Initializing homepage (root path)');
-        initHomePage();
     }
 
     // Initialize mobile menu if exists
