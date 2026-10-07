@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers - ClassReview</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>ClassReview</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="teachers.html">TEACHERS</a></li>
+                    <li><a href="top-rated.html">TOP RATED</a></li>
+                    <li><a href="most-reviewed.html">MOST REVIEWED</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="teachers-page">
+            <div class="container">
+                <h1>8th Grade Teachers</h1>
+                <div class="controls">
+                    <input type="text" id="teacher-search" placeholder="Search teachers...">
+                    <select id="sort-dropdown">
+                        <option value="most-reviewed">Most Reviewed</option>
+                        <option value="highest-rated">Highest Rated</option>
+                        <option value="lowest-rated">Lowest Rated</option>
+                        <option value="name-az">A-Z</option>
+                        <option value="name-za">Z-A</option>
+                        <option value="recently-reviewed">Recently Reviewed</option>
+                    </select>
+                    <select id="filter-dropdown">
+                        <option value="all-subjects">All Subjects</option>
+                        <option value="math">Math</option>
+                        <option value="science">Science</option>
+                        <option value="english">English</option>
+                        <option value="social-studies">Social Studies</option>
+                        <option value="electives">Electives</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div id="teachers-grid" class="teacher-grid">
+                    <!-- Teacher cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ClassReview. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load the main application as a module -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

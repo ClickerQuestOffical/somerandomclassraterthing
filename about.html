@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - ClassReview</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>ClassReview</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="teachers.html">TEACHERS</a></li>
+                    <li><a href="top-rated.html">TOP RATED</a></li>
+                    <li><a href="most-reviewed.html">MOST REVIEWED</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="about">
+            <div class="container">
+                <h1>About ClassReview</h1>
+                <p>ClassReview is a student-driven review platform for 8th grade teachers at our school. Inspired by the review experience of Steam, we allow students to share anonymous feedback about their classroom experiences.</p>
+
+                <h2>How Ratings Work</h2>
+                <p>Each review consists of a thumbs-up (recommend) or thumbs-down (don't recommend). The overall rating percentage is calculated as:</p>
+                <p><strong>Positive Reviews / Total Reviews × 100</strong></p>
+                <p>This percentage is then translated into a rating label similar to Steam's system:</p>
+                <ul>
+                    <li>Overwhelmingly Positive (95-100%)</li>
+                    <li>Very Positive (80-94%)</li>
+                    <li>Positive (varies with review count)</li>
+                    <li>Mostly Positive (70-79%)</li>
+                    <li>Mixed (40-69%)</li>
+                    <li>Mostly Negative (20-39%)</li>
+                    <li>Negative (below 20%)</li>
+                    <li>Very Negative and Overwhelmingly Negative for high review counts</li>
+                </ul>
+                <p>Teachers with fewer than 10 reviews will see a label indicating "Not enough reviews for a strong rating."</p>
+
+                <h2>Anonymous Reviews</h2>
+                <p>All reviews are anonymous to protect student privacy. We do not collect or display any personally identifiable information about reviewers.</p>
+
+                <h2>Community Guidelines</h2>
+                <p>Reviews must be about classroom experience, teaching style, workload, organization, assignments, and explanations. Do not post:</p>
+                <ul>
+                    <li>Personal information about teachers or students</li>
+                    <li>Threats or harassment</li>
+                    <li>Hate speech, slurs, or discriminatory language</li>
+                    <li>Sexual content</li>
+                    <li>Accusations presented as facts</li>
+                    <li>Spam or attempts to identify anonymous reviewers</li>
+                </ul>
+                <p>Keep disagreements respectful and focused on educational topics.</p>
+
+                <h2>Reporting a Review</h2>
+                <p>If you see a review that violates our guidelines, you can report it by clicking the "Report Review" button on the review card. Reports are reviewed by moderators and may result in the review being hidden from public view.</p>
+
+                <h2>Disclaimer</h2>
+                <p>Reviews on ClassReview represent individual student opinions and are not official school evaluations. The site is not affiliated with the school administration and is intended solely as a peer-to-peer feedback tool.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ClassReview. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load the main application as a module (though about page may not need JS, we load it for consistency) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

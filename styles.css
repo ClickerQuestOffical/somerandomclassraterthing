@@ -1,0 +1,730 @@
+/* Base reset and variables */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-dark: #0f111b;
+    --secondary-dark: #161a25;
+    --card-bg: #2a2f3e;
+    --accent-blue: #4a90e2;
+    --accent-red: #e74c3c;
+    --accent-yellow: #f1c40f;
+    --text-primary: #ffffff;
+    --text-secondary: #bdc3c7;
+    --border-color: #3c4352;
+    --hover-bg: #333a4a;
+    --success-green: #2ecc71;
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Base styles */
+body {
+    font-family: var(--font-primary);
+    background-color: var(--primary-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+header {
+    background-color: var(--secondary-dark);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-blue);
+}
+
+nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--text-primary);
+}
+
+/* Hero section */
+.hero {
+    background-color: var(--secondary-dark);
+    padding: 4rem 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.hero input {
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.hero input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-blue);
+}
+
+/* Teacher grid */
+.teacher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.teacher-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.teacher-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.teacher-card-content {
+    padding: 1.5rem;
+}
+
+.teacher-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.teacher-subject {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.teacher-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rating-percentage {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+.rating-label {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.rating-label.positive {
+    background-color: rgba(74, 144, 226, 0.2);
+    color: var(--accent-blue);
+}
+
+.rating-label.negative {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: var(--accent-red);
+}
+
+.rating-label.neutral {
+    background-color: rgba(241, 196, 15, 0.2);
+    color: var(--accent-yellow);
+}
+
+.review-counts {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.review-counts .positive {
+    color: var(--accent-blue);
+}
+
+.review-counts .negative {
+    color: var(--accent-red);
+}
+
+/* Most Reviewed section */
+.most-reviewed {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.most-reviewed h2,
+.teachers-page h1,
+.top-rated h1,
+.most-reviewed-page h1,
+.about h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--accent-blue);
+}
+
+/* Controls on teachers page */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.controls input,
+.controls select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.controls input:focus,
+.controls select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-blue);
+}
+
+/* Teacher profile page */
+.teacher-profile {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+#teacher-header {
+    text-align: center;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#teacher-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+#teacher-header .subject {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+#teacher-rating {
+    text-align: center;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rating-bar-container {
+    height: 40px;
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.rating-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-red));
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.rating-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255,255,255,0.1) 10px,
+        rgba(255,255,255,0.1) 20px
+    );
+    pointer-events: none;
+}
+
+.rating-label-large {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+#review-counts {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1.5rem 0;
+    font-size: 1.25rem;
+}
+
+#review-counts .count {
+    font-weight: bold;
+}
+
+#review-counts .positive {
+    color: var(--accent-blue);
+}
+
+#review-counts .negative {
+    color: var(--accent-red);
+}
+
+#review-visualization {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.visualization-bar {
+    height: 30px;
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 1rem 0;
+    display: flex;
+}
+
+.visualization-segment {
+    height: 100%;
+    flex: 1;
+    transition: flex 0.5s ease;
+}
+
+.visualization-segment.positive {
+    background-color: var(--accent-blue);
+}
+
+.visualization-segment.negative {
+    background-color: var(--accent-red);
+}
+
+.visualization-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+#reviews-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+#reviews-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--accent-blue);
+}
+
+.sort-options {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.sort-options button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sort-options button.active,
+.sort-options button:hover {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+#reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.review-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.vote-icon {
+    font-size: 1.5rem;
+}
+
+.vote-icon.positive {
+    color: var(--accent-blue);
+}
+
+.vote-icon.negative {
+    color: var(--accent-red);
+}
+
+.review-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.review-text {
+    padding: 1rem;
+    line-height: 1.5;
+}
+
+.report-button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.report-button:hover {
+    background-color: var(--accent-red);
+    color: white;
+}
+
+/* Write review form */
+#write-review {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+#write-review h3 {
+    margin-bottom: 1.5rem;
+    color: var(--accent-blue);
+}
+
+#review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.vote-options {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.vote-btn {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1.25rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#vote-positive {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+#vote-negative {
+    background-color: var(--accent-red);
+    color: white;
+}
+
+#vote-positive:hover {
+    opacity: 0.9;
+}
+
+#vote-negative:hover {
+    opacity: 0.9;
+}
+
+#review-comment {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    resize: vertical;
+}
+
+#review-comment:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-blue);
+}
+
+.char-counter {
+    align-self: flex-end;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.guidelines {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+#submit-review {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.25rem;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+#submit-review:hover {
+    opacity: 0.9;
+}
+
+/* Rankings pages */
+.teacher-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ranked-teacher {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.rank {
+    font-size: 2rem;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+}
+
+.teacher-info {
+    flex: 1;
+}
+
+.teacher-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+.teacher-info .subject {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.teacher-stats {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.teacher-stats .percentage {
+    font-weight: bold;
+}
+
+.teacher-stats .review-count {
+    font-weight: bold;
+}
+
+/* About page */
+.about p {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.about h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--accent-blue);
+}
+
+.about ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+/* Loading, error, empty states */
+.loading,
+.error,
+.empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.loading {
+    font-style: italic;
+}
+
+.error {
+    color: var(--accent-red);
+}
+
+.empty {
+    font-style: italic;
+}
+
+.btn-retry {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-retry:hover {
+    opacity: 0.9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls input,
+    .controls select {
+        width: 100%;
+    }
+
+    .teacher-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ranked-teacher {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .teacher-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #review-counts {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .review-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .report-button {
+        width: auto;
+        padding: 0.5rem 1rem;
+    }
+
+    .vote-options {
+        flex-direction: column;
+    }
+
+    .vote-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    nav a {
+        font-size: 0.9rem;
+    }
+}

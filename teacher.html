@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Profile - ClassReview</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>ClassReview</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="teachers.html">TEACHERS</a></li>
+                    <li><a href="top-rated.html">TOP RATED</a></li>
+                    <li><a href="most-reviewed.html">MOST REVIEWED</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="teacher-profile">
+            <div class="container">
+                <div id="teacher-header">
+                    <!-- Teacher name and subject will be inserted here -->
+                </div>
+                <div id="teacher-rating">
+                    <!-- Rating bar and label will be inserted here -->
+                </div>
+                <div id="review-counts">
+                    <!-- Thumbs up/down counts will be inserted here -->
+                </div>
+                <div id="review-visualization">
+                    <!-- Review distribution visualization will be inserted here -->
+                </div>
+                <div id="reviews-section">
+                    <h2>Reviews</h2>
+                    <div class="sort-options">
+                        <button id="sort-helpful" class="active">Most Helpful</button>
+                        <button id="sort-recent">Most Recent</button>
+                        <button id="sort-positive">Most Positive</button>
+                        <button id="sort-negative">Most Negative</button>
+                    </div>
+                    <div id="reviews-list">
+                        <!-- Review cards will be inserted here by JavaScript -->
+                    </div>
+                    <div id="write-review">
+                        <h3>Write a Review</h3>
+                        <form id="review-form">
+                            <div class="vote-options">
+                                <button type="button" id="vote-positive" class="vote-btn">👍 Recommend</button>
+                                <button type="button" id="vote-negative" class="vote-btn">👎 Don't Recommend</button>
+                            </div>
+                            <textarea id="review-comment" placeholder="What was your experience like in this class?" maxlength="1000"></textarea>
+                            <div class="char-counter">0/1000</div>
+                            <p class="guidelines">Keep reviews respectful and focused on classroom experience. Do not post personal information, threats, harassment, or information about other students.</p>
+                            <button type="submit" id="submit-review">Post Review</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ClassReview. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load the main application as a module -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
