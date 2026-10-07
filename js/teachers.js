@@ -3,7 +3,7 @@
 
 import { supabase } from './supabase.js';
 import { getReviewStats } from './rating.js';
-import { showLoading, showError, showEmpty, createTeacherCard } from './ui.js';
+import { showLoading, showError, showEmpty, createTeacherCard, escapeHtml } from './ui.js';
 
 // Diagnostic function to test teachers table query directly
 export async function testTeachersTable() {
