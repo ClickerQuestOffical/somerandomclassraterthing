@@ -3,6 +3,7 @@
 
 import { supabase } from './supabase.js';
 import { showError } from './ui.js';
+import { getAnonymousUserId } from './supabase.js';
 
 /**
  * Submit a new review
@@ -13,11 +14,10 @@ import { showError } from './ui.js';
  */
 export async function submitReview(teacherId, vote, comment) {
     try {
-        // In a real implementation, we would get an anonymous user ID from auth
-        // For now, we'll generate a temporary one based on session or random
-        const anonymousUserId = crypto.randomUUID();
+        // Get the anonymous user ID from Supabase auth
+        const anonymousUserId = await getAnonymousUserId();
 
-        const { data, error } = await supabase
+        const { data, error: submitError } = await supabase
             .from('reviews')
             .insert({
                 teacher_id: teacherId,
@@ -27,7 +27,7 @@ export async function submitReview(teacherId, vote, comment) {
                 status: 'approved' // Assuming auto-approve for now
             });
 
-        if (error) throw error;
+        if (submitError) throw submitError;
 
         return { success: true, data };
     } catch (error) {
@@ -45,11 +45,10 @@ export async function submitReview(teacherId, vote, comment) {
  */
 export async function reportReview(reviewId, reason, details = '') {
     try {
-        // In a real implementation, we would get a reporter ID from auth
-        // For now, we'll generate a temporary one
-        const reporterId = crypto.randomUUID();
+        // Get the anonymous user ID from Supabase auth
+        const reporterId = await getAnonymousUserId();
 
-        const { data, error } = await supabase
+        const { data, error: reportError } = await supabase
             .from('reports')
             .insert({
                 review_id: reviewId,
@@ -58,7 +57,7 @@ export async function reportReview(reviewId, reason, details = '') {
                 reporter_id: reporterId
             });
 
-        if (error) throw error;
+        if (reportError) throw reportError;
 
         return { success: true, data };
     } catch (error) {

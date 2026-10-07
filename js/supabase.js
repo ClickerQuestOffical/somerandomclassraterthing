@@ -8,18 +8,15 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * @returns {Promise<string>} The anonymous user ID.
  */
 export async function getAnonymousUserId() {
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (user) {
     return user.id;
   }
-  const { data: { user: newUser }, error } = await supabase.auth.signInAnonymously();
-  if (error) {
-    console.error('Error signing in anonymously:', error);
-    // Fallback to a random UUID if anonymous auth fails
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+  const { data: { user: newUser }, error: signInError } = await supabase.auth.signInAnonymously();
+  if (signInError) {
+    console.error('Error signing in anonymously:', signInError);
+    // Fallback to null if anonymous auth fails
+    return null;
   }
   return newUser.id;
 }
