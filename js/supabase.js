@@ -5,20 +5,40 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /**
  * Get the anonymous user ID, signing in anonymously if necessary.
- * @returns {Promise<string>} The anonymous user ID.
+ * Uses a singleton promise to prevent multiple concurrent sign-in attempts
+ * that can cause Navigator LockManager errors.
+ * @returns {Promise<string|null>} The anonymous user ID or null if auth fails.
  */
 export async function getAnonymousUserId() {
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  // Check if we already have a user from existing session
+  const { data: { user }, error: getUserError } = await supabase.auth.getUser();
   if (user) {
     return user.id;
   }
-  const { data: { user: newUser }, error: signInError } = await supabase.auth.signInAnonymously();
-  if (signInError) {
-    console.error('Error signing in anonymously:', signInError);
-    // Fallback to null if anonymous auth fails
-    return null;
+
+  // Initialize the promise on first call, reuse it for subsequent calls
+  if (!getAnonymousUserId.promise) {
+    getAnonymousUserId.promise = (async () => {
+      try {
+        const { data: { user: newUser }, error: signInError } = await supabase.auth.signInAnonymously();
+        if (signInError) {
+          console.error('Error signing in anonymously:', signInError);
+          // Reset the promise on error so next call can retry
+          getAnonymousUserId.promise = null;
+          return null;
+        }
+        return newUser.id;
+      } catch (err) {
+        console.error('Unexpected error during anonymous sign-in:', err);
+        // Reset the promise on error so next call can retry
+        getAnonymousUserId.promise = null;
+        return null;
+      }
+    })();
   }
-  return newUser.id;
+
+  return getAnonymousUserId.promise;
 }
 
+// Export the supabase client
 export { supabase };
